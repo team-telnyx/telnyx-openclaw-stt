@@ -1,0 +1,45 @@
+{
+  "id": "telnyx-stt",
+  "name": "Telnyx Speech-to-Text",
+  "description": "Use Telnyx as a media-understanding provider for OpenClaw audio transcription.",
+  "enabledByDefault": true,
+  "providers": ["telnyx"],
+  "providerAuthEnvVars": {
+    "telnyx": ["TELNYX_API_KEY"]
+  },
+  "providerAuthChoices": [
+    {
+      "provider": "telnyx",
+      "method": "api-key",
+      "choiceId": "telnyx-api-key",
+      "choiceLabel": "Telnyx API Key",
+      "assistantPriority": -50,
+      "groupId": "telnyx",
+      "groupLabel": "Telnyx",
+      "groupHint": "Telnyx AI API key",
+      "optionKey": "telnyxApiKey",
+      "cliFlag": "--telnyx-api-key",
+      "cliOption": "--telnyx-api-key <key>",
+      "cliDescription": "Telnyx API Key"
+    }
+  ],
+  "contracts": {
+    "mediaUnderstandingProviders": ["telnyx"]
+  },
+  "mediaUnderstandingProviderMetadata": {
+    "telnyx": {
+      "capabilities": ["audio"],
+      "defaultModels": {
+        "audio": "openai/whisper-large-v3-turbo"
+      },
+      "autoPriority": {
+        "audio": 25
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}
