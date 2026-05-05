@@ -1,8 +1,8 @@
-# telnyx-openclaw-stt
+# telnyx-stt
 
 Telnyx speech-to-text provider for [OpenClaw](https://github.com/openclaw/openclaw) audio transcription.
 
-Registers Telnyx as a first-class `mediaUnderstandingProviders` backend so inbound voice notes, audio uploads, and recordings can be transcribed through Telnyx STT instead of Deepgram.
+Registers Telnyx as a first-class `mediaUnderstandingProviders` backend so inbound voice notes, audio uploads, and recordings can be transcribed as an alternative media-understanding backend.
 
 ## Features
 
@@ -22,7 +22,15 @@ Registers Telnyx as a first-class `mediaUnderstandingProviders` backend so inbou
 ## Install
 
 ```bash
-openclaw plugins install team-telnyx/telnyx-openclaw-stt
+openclaw plugins install telnyx-stt --from /path/to/telnyx-stt
+```
+
+Or install from a local checkout:
+
+```bash
+cd /path/to/telnyx-stt
+npm run build
+openclaw plugins install /path/to/telnyx-stt
 ```
 
 ## Configuration
@@ -88,35 +96,33 @@ In `openclaw.json`:
 git clone https://github.com/team-telnyx/telnyx-openclaw-stt.git
 cd telnyx-openclaw-stt
 npm install
+npm run build
 npm test
 npm run lint
 ```
 
 ## Live smoke test
 
+The repo includes a small WAV fixture (`fixtures/sample.wav`) for testing.
+
 ```bash
 export TELNYX_API_KEY=KEY...
 node --input-type=module <<'EOF'
-const sampleUrl = 'https://static.deepgram.com/examples/Bueller-Life-moves-pretty-fast.wav';
-const res = await fetch(sampleUrl);
-if (!res.ok) throw new Error(`sample fetch failed ${res.status}`);
-const sample = await res.arrayBuffer();
+import { readFileSync } from 'node:fs';
+const sample = readFileSync('./fixtures/sample.wav');
 const form = new FormData();
 form.set('model', 'openai/whisper-large-v3-turbo');
 form.set('file', new Blob([sample], { type: 'audio/wav' }), 'sample.wav');
-const out = await fetch('https://api.telnyx.com/v2/ai/audio/transcriptions', {
+const res = await fetch('https://api.telnyx.com/v2/ai/audio/transcriptions', {
   method: 'POST',
   headers: { Authorization: `Bearer ${process.env.TELNYX_API_KEY}` },
   body: form,
 });
-if (!out.ok) throw new Error(`Telnyx API error ${out.status}: ${await out.text()}`);
-const data = await out.json();
+if (!res.ok) throw new Error(`Telnyx API error ${res.status}: ${await res.text()}`);
+const data = await res.json();
 console.log(data.text);
 EOF
 ```
-
-This downloads a public WAV sample, sends it to Telnyx STT, and prints the transcript.
-The sample currently comes from a public Deepgram-hosted test file, so the smoke test depends on that URL remaining reachable.
 
 ## Unit Tests
 
@@ -128,10 +134,10 @@ npm run lint
 
 ## How it works
 
-- builds multipart form data with `model`, `language`, `prompt`, and extra provider flags
-- uploads audio to Telnyx STT
-- reads `text` from the response payload
-- returns the transcript through OpenClaw’s media-understanding contract
+- Builds multipart form data with `model`, `language`, `prompt`, and extra provider flags
+- Uploads audio to Telnyx STT
+- Reads `text` from the response payload
+- Returns the transcript through OpenClaw's media-understanding contract
 
 ## Files
 
@@ -139,7 +145,7 @@ npm run lint
 - `src/audio.ts` — transcription transport logic
 - `src/media-understanding-provider.ts` — provider registration object
 - `src/audio.test.ts` — unit tests
-- README live smoke-test snippet — manual end-to-end verification
+- `fixtures/sample.wav` — test audio fixture (440 Hz sine, 0.5s)
 
 ## License
 

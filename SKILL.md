@@ -1,25 +1,25 @@
 ---
-name: telnyx-openclaw-stt
+name: telnyx-stt
 description: Add Telnyx as an OpenClaw audio transcription provider with TELNYX_API_KEY auth and multipart speech-to-text support.
 homepage: https://github.com/team-telnyx/telnyx-openclaw-stt
 metadata:
   {
-    "openclaw": {
+    "ocplatform": {
       "emoji": "🎙️",
       "requires": { "env": ["TELNYX_API_KEY"] },
       "install": [
         {
-          "id": "github",
-          "kind": "github",
-          "package": "team-telnyx/telnyx-openclaw-stt",
-          "label": "Install the Telnyx STT OpenClaw plugin"
+          "id": "local",
+          "kind": "local",
+          "package": "/path/to/telnyx-stt",
+          "label": "Install the Telnyx STT OpenClaw plugin from local path"
         }
       ]
     }
   }
 ---
 
-# Telnyx OpenClaw STT
+# Telnyx OCPlatform STT
 
 Use Telnyx as your OpenClaw audio transcription provider.
 
@@ -33,7 +33,9 @@ Use Telnyx as your OpenClaw audio transcription provider.
 ## Install
 
 ```bash
-openclaw plugins install team-telnyx/telnyx-openclaw-stt
+# From a local checkout (build first):
+cd /path/to/telnyx-stt && npm run build
+openclaw plugins install /path/to/telnyx-stt
 ```
 
 ## Setup

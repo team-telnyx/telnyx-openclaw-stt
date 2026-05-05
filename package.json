@@ -1,18 +1,17 @@
 {
-  "name": "telnyx-openclaw-stt",
+  "name": "telnyx-stt",
   "version": "1.0.0",
   "type": "module",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "description": "Telnyx STT provider for OpenClaw audio transcription",
   "openclaw": {
     "extensions": [
-      "./index.ts"
+      "./dist/index.js"
     ]
   },
   "files": [
-    "index.ts",
-    "src/audio.ts",
-    "src/media-understanding-provider.ts",
+    "dist",
+    "fixtures",
     "openclaw.plugin.json",
     "README.md",
     "LICENSE",
@@ -22,6 +21,8 @@
     "node": ">=22.14.0"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
     "test": "vitest run",
     "lint": "tsc --noEmit"
   },
@@ -48,7 +49,7 @@
   },
   "devDependencies": {
     "openclaw": "^2026.4.24",
-    "typescript": "^6.0.3",
+    "typescript": "^5.6.0",
     "vitest": "^4.1.5"
   }
 }

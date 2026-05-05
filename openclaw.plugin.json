@@ -3,9 +3,13 @@
   "name": "Telnyx Speech-to-Text",
   "description": "Use Telnyx as a media-understanding provider for OpenClaw audio transcription.",
   "enabledByDefault": true,
-  "providers": ["telnyx"],
-  "providerAuthEnvVars": {
-    "telnyx": ["TELNYX_API_KEY"]
+  "setup": {
+    "providers": [
+      {
+        "id": "telnyx",
+        "envVars": ["TELNYX_API_KEY"]
+      }
+    ]
   },
   "providerAuthChoices": [
     {
