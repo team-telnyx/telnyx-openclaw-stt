@@ -1,5 +1,5 @@
 {
-  "name": "telnyx-stt",
+  "name": "telnyx-openclaw-stt",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
