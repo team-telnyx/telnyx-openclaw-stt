@@ -1,2 +1,154 @@
-# telnyx-openclaw-stt
-Telnyx STT provider for OpenClaw audio transcription
+# telnyx-stt
+
+Telnyx speech-to-text provider for [OpenClaw](https://github.com/openclaw/openclaw) audio transcription.
+
+Registers Telnyx as a first-class `mediaUnderstandingProviders` backend so inbound voice notes, audio uploads, and recordings can be transcribed as an alternative media-understanding backend.
+
+## Features
+
+- **Provider ID:** `telnyx`
+- **Plugin ID:** `telnyx-stt`
+- **Default model:** `openai/whisper-large-v3-turbo`
+- **Auto-select priority:** 25
+- **Auth:** `TELNYX_API_KEY` env var or provider config
+- **Transport:** multipart upload to `POST /v2/ai/audio/transcriptions`
+
+## Prerequisites
+
+- Node.js `>=22.14.0`
+- OpenClaw `>=2026.4.0`
+- A valid `TELNYX_API_KEY`
+
+## Install
+
+From a local checkout:
+
+```bash
+cd /path/to/telnyx-openclaw-stt
+npm install && npm run build
+openclaw plugins install /path/to/telnyx-openclaw-stt
+```
+
+Or from your current directory:
+
+```bash
+ocplatform plugins install .
+```
+
+## Configuration
+
+### Minimal (env var)
+
+```bash
+export TELNYX_API_KEY=KEY...
+```
+
+### Enable Telnyx for audio transcription
+
+In `openclaw.json`:
+
+```json
+{
+  "tools": {
+    "media": {
+      "audio": {
+        "enabled": true,
+        "models": [
+          {
+            "provider": "telnyx",
+            "model": "openai/whisper-large-v3-turbo"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+### Optional language hint and provider flags
+
+```json
+{
+  "tools": {
+    "media": {
+      "audio": {
+        "prompt": "Expect OpenClaw and Telnyx product names",
+        "providerOptions": {
+          "telnyx": {
+            "temperature": 0,
+            "timestamps": true
+          }
+        },
+        "models": [
+          {
+            "provider": "telnyx",
+            "model": "openai/whisper-large-v3-turbo",
+            "language": "en"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+## Local development
+
+```bash
+git clone https://github.com/team-telnyx/telnyx-openclaw-stt.git
+cd telnyx-openclaw-stt
+npm install
+npm run build
+npm test
+npm run lint
+```
+
+## Live smoke test
+
+The repo includes a small WAV fixture (`fixtures/sample.wav`) for testing.
+
+```bash
+export TELNYX_API_KEY=KEY...
+node --input-type=module <<'EOF'
+import { readFileSync } from 'node:fs';
+const sample = readFileSync('./fixtures/sample.wav');
+const form = new FormData();
+form.set('model', 'openai/whisper-large-v3-turbo');
+form.set('file', new Blob([sample], { type: 'audio/wav' }), 'sample.wav');
+const res = await fetch('https://api.telnyx.com/v2/ai/audio/transcriptions', {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${process.env.TELNYX_API_KEY}` },
+  body: form,
+});
+if (!res.ok) throw new Error(`Telnyx API error ${res.status}: ${await res.text()}`);
+const data = await res.json();
+console.log(data.text);
+EOF
+```
+
+## Unit Tests
+
+```bash
+npm install
+npm test
+npm run lint
+```
+
+## How it works
+
+- Builds multipart form data with `model`, `language`, `prompt`, and extra provider flags
+- Uploads audio to Telnyx STT
+- Reads `text` from the response payload
+- Returns the transcript through OpenClaw's media-understanding contract
+
+## Files
+
+- `index.ts` — plugin entry
+- `src/audio.ts` — transcription transport logic
+- `src/media-understanding-provider.ts` — provider registration object
+- `src/audio.test.ts` — unit tests
+- `fixtures/sample.wav` — test audio fixture (440 Hz sine, 0.5s)
+
+## License
+
+MIT
