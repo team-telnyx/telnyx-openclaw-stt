@@ -21,16 +21,18 @@ Registers Telnyx as a first-class `mediaUnderstandingProviders` backend so inbou
 
 ## Install
 
+From a local checkout:
+
 ```bash
-openclaw plugins install telnyx-stt --from /path/to/telnyx-stt
+cd /path/to/telnyx-openclaw-stt
+npm install && npm run build
+openclaw plugins install /path/to/telnyx-openclaw-stt
 ```
 
-Or install from a local checkout:
+Or from your current directory:
 
 ```bash
-cd /path/to/telnyx-stt
-npm run build
-openclaw plugins install /path/to/telnyx-stt
+ocplatform plugins install .
 ```
 
 ## Configuration

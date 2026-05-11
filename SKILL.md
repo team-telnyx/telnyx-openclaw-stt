@@ -4,14 +4,14 @@ description: Add Telnyx as an OpenClaw audio transcription provider with TELNYX_
 homepage: https://github.com/team-telnyx/telnyx-openclaw-stt
 metadata:
   {
-    "ocplatform": {
+    "openclaw": {
       "emoji": "🎙️",
       "requires": { "env": ["TELNYX_API_KEY"] },
       "install": [
         {
           "id": "local",
           "kind": "local",
-          "package": "/path/to/telnyx-stt",
+          "package": "/path/to/telnyx-openclaw-stt",
           "label": "Install the Telnyx STT OpenClaw plugin from local path"
         }
       ]
@@ -19,7 +19,7 @@ metadata:
   }
 ---
 
-# Telnyx OCPlatform STT
+# Telnyx OpenClaw STT
 
 Use Telnyx as your OpenClaw audio transcription provider.
 
@@ -34,8 +34,8 @@ Use Telnyx as your OpenClaw audio transcription provider.
 
 ```bash
 # From a local checkout (build first):
-cd /path/to/telnyx-stt && npm run build
-openclaw plugins install /path/to/telnyx-stt
+cd /path/to/telnyx-openclaw-stt && npm run build
+openclaw plugins install /path/to/telnyx-openclaw-stt
 ```
 
 ## Setup
